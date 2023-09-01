@@ -1,7 +1,5 @@
 package com.gguilhermelopes.webservices.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gguilhermelopes.webservices.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
