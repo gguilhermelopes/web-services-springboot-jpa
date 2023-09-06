@@ -3,8 +3,11 @@ package com.gguilhermelopes.webservices.services;
 import com.gguilhermelopes.webservices.entities.User;
 import com.gguilhermelopes.webservices.repositories.UserRepository;
 
+import com.gguilhermelopes.webservices.services.exceptions.DatabaseException;
 import com.gguilhermelopes.webservices.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +25,6 @@ public class UserService {
     public User findById(Long id){
         Optional<User> obj = repository.findById(id);
 
-
         return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
@@ -31,7 +33,15 @@ public class UserService {
     }
 
     public void delete(Long id){
-        repository.deleteById(id);
+        Optional<User> obj = repository.findById(id);
+        if(obj.isEmpty())
+            throw new ResourceNotFoundException(id);
+
+        try {
+            repository.deleteById(obj.get().getId());
+        } catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User update(Long id, User obj){
