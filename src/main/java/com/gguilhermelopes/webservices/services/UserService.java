@@ -36,7 +36,6 @@ public class UserService {
         Optional<User> obj = repository.findById(id);
         if(obj.isEmpty())
             throw new ResourceNotFoundException(id);
-
         try {
             repository.deleteById(obj.get().getId());
         } catch (DataIntegrityViolationException e){
